@@ -7597,15 +7597,26 @@ if not cna then
 break
 end
 local zoN1=1
+local nt=self.MaN[coN] or self.MaN[5]
 while true do
-zna,zx,zy,zw,zh=self:GWZI(coN,zoN1)
-if not zx then
+-- Stop only when we exceed the game zone list for this continent
+if not nt[zoN1] then
 break
 end
-local maI=self:CZ2MI(coN,zoN1)
+zna,zx,zy,zw,zh=self:GWZI(coN,zoN1)
+zoN1=zoN1+1
+-- Skip zones not in Carbonite's map database (e.g. Cataclysm+ zones)
+if not zx then
+else
+local maI=self:CZ2MI(coN,zoN1-1)
 local nxz=Nx.MITN1[maI] or 0
-local col,inS=self:GMND(maI)
-local tiS=format("%s, %s%s (%s)",cna,col,zna,inS)
+local col,inS,miL=self:GMND(maI)
+local tiS
+if inS=="City" or inS=="Any" then
+tiS=format("%s, %s%s (%s)",cna,col,zna,inS)
+else
+tiS=format("%s, %s%s\n|cffffff00Levels: %s|r",cna,col,zna,inS)
+end
 local loc=Nx.MWH[nxz]
 local loS=4
 if not loc then
@@ -7648,7 +7659,7 @@ spo.WX2=wx
 spo.WY2=wy
 spo.NTB=tiS
 end
-zoN1=zoN1+1
+end
 end
 end
 end
@@ -9832,7 +9843,7 @@ y=floor(y*10)/10
 local dis=((wx-map.PlX) ^ 2+(wy-map.PlY) ^ 2) ^ .5*4.575
 cLXY=format("|cff80b080%.1f %.1f %.0f yds",x,y,dis)
 cLS=cLXY
-local nam=UpdateMapHighlight(x/100,y/100)
+local nam=UpdateMapHighlight and UpdateMapHighlight(x/100,y/100)
 if nam then
 cLS=format("%s\n|cffafafaf%s",cLS,nam)
 end
